@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Category } from '../model/Category';
 import { CategoriesRepository } from '../repositories/CategoriesRepository';
+import { CreateCategoryService } from '../service/CreateCategoryService';
 
 const categoriesRoutes = Router();
 const categoriesRepository = new CategoriesRepository();
@@ -10,13 +11,9 @@ const categoriesRepository = new CategoriesRepository();
 categoriesRoutes.post('/', (request, response) => {
   const { name, description } = request.body;
 
-  const categoryAlredyExists = categoriesRepository.findByName(name);
+  const createCategoryService = new CreateCategoryService(categoriesRepository);
 
-  if (categoryAlredyExists) {
-    return response.status(400).json({ error: 'Category already exists!' });
-  }
-
-  categoriesRepository.create({
+  createCategoryService.execute({
     name,
     description,
   });
